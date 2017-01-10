@@ -1,10 +1,16 @@
 sudo: false
 language: python
 
+addons:
+  apt:
+    sources:
+      - elasticsearch-1.7
+    packages:
+      - elasticsearch
+
 env:
   global:
     - MO_ADDRESS=127.0.0.1:20000
-    - ELASTIC=1.7.3
     - ELASTIC_MAPPER_ATTACHMENTS=2.7.1
 
 matrix:
@@ -22,12 +28,10 @@ matrix:
       env: MONGODB=2.4.14
 
 install:
-  - # Install Elasticsearch with mapper-attachments
-  - wget https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-${ELASTIC}.tar.gz
-  - tar -xvf elasticsearch-${ELASTIC}.tar.gz
-  - export PATH=${PWD}/elasticsearch-${ELASTIC}/bin/:${PATH}
-  - echo 'y' |  elasticsearch-${ELASTIC}/bin/plugin install elasticsearch/elasticsearch-mapper-attachments/${ELASTIC_MAPPER_ATTACHMENTS}
+  - # Install Elasticsearch mapper-attachments
+  - which elasticsearch
   - elasticsearch --version
+  - echo 'y' |  plugin install elasticsearch/elasticsearch-mapper-attachments/${ELASTIC_MAPPER_ATTACHMENTS}
   - # Install MongoDB
   - wget http://fastdl.mongodb.org/linux/mongodb-linux-x86_64-${MONGODB}.tgz
   - tar -zxf mongodb-linux-x86_64-${MONGODB}.tgz
@@ -38,8 +42,8 @@ install:
 
 before_script:
   - elasticsearch > temp.txt &
-  - sleep 10
   - mongo-orchestration start -p 20000 -b 127.0.0.1
+  - sleep 10
 
 script:
   - python setup.py test
