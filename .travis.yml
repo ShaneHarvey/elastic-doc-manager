@@ -30,7 +30,7 @@ matrix:
 install:
   - # Install Elasticsearch mapper-attachments
   - which elasticsearch
-  - elasticsearch --version
+  - elasticsearch -v
   - echo 'y' |  plugin install elasticsearch/elasticsearch-mapper-attachments/${ELASTIC_MAPPER_ATTACHMENTS}
   - # Install MongoDB
   - wget http://fastdl.mongodb.org/linux/mongodb-linux-x86_64-${MONGODB}.tgz
